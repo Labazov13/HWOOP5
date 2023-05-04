@@ -46,6 +46,37 @@ public class FileOperationImpl implements FileOperation {
         return lines;
     }
 
+    public void deleteLine(String user) throws IOException {
+        List<String> lines = new ArrayList<>();
+        File file = new File(fileName);
+        FileReader fr = new FileReader(file);
+        BufferedReader bufferedReader = new BufferedReader(fr);
+        String lineUser = bufferedReader.readLine();
+        if (lineUser != null) {
+            lines.add(lineUser);
+        }
+        while(lineUser != null){
+            lineUser = bufferedReader.readLine();
+            if (lineUser != null) {
+                lines.add(lineUser);
+            }
+        }
+        fr.close();
+        lines.removeIf(line -> line.equals(user));
+        saveAllLines(lines);
+    }
+    public void deleteAllLine(List<String> lines) throws IOException {
+        File file = new File(fileName);
+        FileReader fr = new FileReader(file);
+        BufferedReader bufferedReader = new BufferedReader(fr);
+        String lineUser = bufferedReader.readLine();
+        while (lineUser != null){
+            lines.remove(lineUser);
+            lineUser = bufferedReader.readLine();
+        }
+        saveAllLines(lines);
+    }
+
     public void saveAllLines(List<String> lines) {
         try (FileWriter writer = new FileWriter(fileName, false)) {
             for (String line : lines) {

@@ -1,5 +1,6 @@
 package personal.model;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,11 +37,40 @@ public class RepositoryFile implements Repository {
         String id = String.format("%d", newId);
         user.setId(id);
         users.add(user);
+        saveAllUsers(users);
+        return id;
+    }
+
+    @Override
+    public void updateUser(User updateUser) {
+        List<User> users = this.getAllUsers();
+        for (User user : users) {
+            if(user.getId().equals(updateUser.getId())){
+                user.setFirstName(updateUser.getFirstName());
+                user.setLastName(updateUser.getLastName());
+                user.setPhone(updateUser.getPhone());
+            }
+        }
+        saveAllUsers(users);
+    }
+    private void saveAllUsers(List<User> users){
         List<String> lines = new ArrayList<>();
         for (User item: users) {
             lines.add(mapper.map(item));
         }
         fileOperation.saveAllLines(lines);
-        return id;
+    }
+
+    public void deleteUser(User user, String userID) throws IOException {
+        List<String> lines = fileOperation.readAllLines();
+        for(String line : lines){
+            if(mapper.map(line).getId().equals(userID)){
+                fileOperation.deleteLine(line);
+            }
+        }
+    }
+    public void deleteAllUser(List<User> users) throws IOException {
+        List<String> lines = fileOperation.readAllLines();
+        fileOperation.deleteAllLine(lines);
     }
 }

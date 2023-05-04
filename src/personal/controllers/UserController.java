@@ -3,6 +3,7 @@ package personal.controllers;
 import personal.model.Repository;
 import personal.model.User;
 
+import java.io.IOException;
 import java.util.List;
 
 public class UserController {
@@ -23,7 +24,28 @@ public class UserController {
                 return user;
             }
         }
-
         throw new Exception("User not found");
+    }
+
+    public List<User> getUsers(){
+        return repository.getAllUsers();
+    }
+
+    public void deleteUser(String userID) throws IOException {
+        List<User> users = repository.getAllUsers();
+        for(User user : users){
+            if(user.getId().equals(userID)){
+                repository.deleteUser(user, userID);
+            }
+        }
+    }
+    public void deleteAllUser() throws IOException {
+        List<User> users = repository.getAllUsers();
+        repository.deleteAllUser(users);
+
+    }
+
+    public void updateUser(User updateUser) {
+        repository.updateUser(updateUser);
     }
 }
